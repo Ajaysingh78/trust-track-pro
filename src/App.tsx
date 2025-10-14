@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar, type UserRole } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { Login } from "./components/login";
 import Landing from "./pages/Landing";
 import Beneficiary from "./pages/Beneficiary";
 import Officer from "./pages/Officer";
@@ -19,6 +20,13 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [currentRole, setCurrentRole] = useState<UserRole>(null);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const handleLogin = (role: UserRole, email: string) => {
+    setCurrentRole(role);
+    setShowLogin(false);
+    console.log(`Logged in as ${role} with email: ${email}`);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -27,10 +35,22 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <div className="min-h-screen flex flex-col">
-            <Navbar currentRole={currentRole} onRoleChange={setCurrentRole} />
+            <Navbar 
+              currentRole={currentRole} 
+              onRoleChange={setCurrentRole}
+            />
             <main className="flex-1">
               <Routes>
                 <Route path="/" element={<Landing />} />
+                <Route 
+                  path="/login" 
+                  element={
+                    <Login 
+                      onLogin={handleLogin}
+                      onClose={() => setShowLogin(false)}
+                    />
+                  } 
+                />
                 <Route path="/beneficiary" element={<Beneficiary />} />
                 <Route path="/officer" element={<Officer />} />
                 <Route path="/admin" element={<Admin />} />
