@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Mail, Linkedin, Download, Send, Building2, Phone, CheckCircle2, Shield, Clock, Users } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Mail, Linkedin, Download, Send, Building2, Phone, CheckCircle2, Shield, Clock, Users, AlertCircle } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,38 +17,19 @@ const Contact = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errors, setErrors] = useState({});
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+  const handleSubmit = async () => {
+    // Basic validation
+    if (!formData.name.trim() || !formData.department.trim() || !formData.email.trim()) {
+      alert('Please fill in all required fields (Name, Department, Email)');
+      return;
     }
-    
-    if (!formData.department.trim()) {
-      newErrors.department = 'Department/Organization is required';
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    
-    if (formData.phone && !/^[+]?[\d\s-()]+$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address');
       return;
     }
 
@@ -67,7 +47,6 @@ const Contact = () => {
       organizationType: '',
       message: '' 
     });
-    setErrors({});
     setIsSubmitting(false);
     
     // Hide success message after 5 seconds
@@ -75,17 +54,8 @@ const Contact = () => {
   };
 
   const handleDownloadMoU = () => {
-    // Simulate download - in production this would trigger actual download
-    const link = document.createElement('a');
-    link.download = 'VeriLoan_MoU_Template.pdf';
-    link.click();
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
+    // Simulate download
+    alert('MoU Template downloaded successfully!');
   };
 
   const partnershipBenefits = [
@@ -112,17 +82,17 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20 py-16">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 py-16">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Hero Section */}
         <div className="text-center mb-16 space-y-4">
-          <div className="inline-block px-4 py-2 bg-primary/10 rounded-full mb-4">
-            <span className="text-primary font-semibold text-sm">Partner With VeriLoan</span>
+          <div className="inline-block px-4 py-2 bg-blue-100 rounded-full mb-4">
+            <span className="text-blue-600 font-semibold text-sm">Partner With VeriLoan</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold text-slate-900">
             Transform Loan Verification
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
             Join leading financial institutions in revolutionizing loan processing with AI-powered verification
           </p>
         </div>
@@ -131,7 +101,7 @@ const Contact = () => {
         <div className="grid lg:grid-cols-5 gap-8 mb-16">
           {/* Contact Form - Takes 3 columns */}
           <div className="lg:col-span-3">
-            <Card className="shadow-xl border-2 hover:border-primary/50 transition-all duration-300">
+            <Card className="shadow-lg border-2 border-slate-200">
               <CardHeader className="space-y-3 pb-6">
                 <CardTitle className="text-2xl">Request Partnership / MoU</CardTitle>
                 <CardDescription className="text-base">
@@ -140,72 +110,64 @@ const Contact = () => {
               </CardHeader>
               <CardContent>
                 {submitSuccess && (
-                  <Alert className="mb-6 bg-green-50 border-green-200">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-800">
-                      MoU request submitted successfully! Our team will contact you within 24 hours.
-                    </AlertDescription>
-                  </Alert>
+                  <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-lg flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-green-900">Success!</p>
+                      <p className="text-sm text-green-800">MoU request submitted successfully! Our team will contact you within 24 hours.</p>
+                    </div>
+                  </div>
                 )}
 
                 <div className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="name" className="text-sm font-semibold">
-                        Full Name <span className="text-destructive">*</span>
+                      <Label htmlFor="name" className="text-sm font-semibold text-slate-700">
+                        Full Name <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="name"
                         placeholder="Enter your full name"
                         value={formData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        className={errors.name ? 'border-destructive' : ''}
+                        onChange={(e) => setFormData({...formData, name: e.target.value})}
                         disabled={isSubmitting}
+                        className="h-11"
                       />
-                      {errors.name && (
-                        <p className="text-xs text-destructive">{errors.name}</p>
-                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-semibold">
-                        Email Address <span className="text-destructive">*</span>
+                      <Label htmlFor="email" className="text-sm font-semibold text-slate-700">
+                        Email Address <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="email"
                         type="email"
                         placeholder="your.email@example.com"
                         value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        className={errors.email ? 'border-destructive' : ''}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
                         disabled={isSubmitting}
+                        className="h-11"
                       />
-                      {errors.email && (
-                        <p className="text-xs text-destructive">{errors.email}</p>
-                      )}
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="department" className="text-sm font-semibold">
-                        Department / Organization <span className="text-destructive">*</span>
+                      <Label htmlFor="department" className="text-sm font-semibold text-slate-700">
+                        Department / Organization <span className="text-red-500">*</span>
                       </Label>
                       <Input
                         id="department"
                         placeholder="e.g., Ministry of Finance, State Bank"
                         value={formData.department}
-                        onChange={(e) => handleInputChange('department', e.target.value)}
-                        className={errors.department ? 'border-destructive' : ''}
+                        onChange={(e) => setFormData({...formData, department: e.target.value})}
                         disabled={isSubmitting}
+                        className="h-11"
                       />
-                      {errors.department && (
-                        <p className="text-xs text-destructive">{errors.department}</p>
-                      )}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-sm font-semibold">
+                      <Label htmlFor="phone" className="text-sm font-semibold text-slate-700">
                         Phone Number
                       </Label>
                       <Input
@@ -213,25 +175,22 @@ const Contact = () => {
                         type="tel"
                         placeholder="+91 XXXXX XXXXX"
                         value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
-                        className={errors.phone ? 'border-destructive' : ''}
+                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
                         disabled={isSubmitting}
+                        className="h-11"
                       />
-                      {errors.phone && (
-                        <p className="text-xs text-destructive">{errors.phone}</p>
-                      )}
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="organizationType" className="text-sm font-semibold">
+                    <Label htmlFor="organizationType" className="text-sm font-semibold text-slate-700">
                       Organization Type
                     </Label>
                     <select
                       id="organizationType"
                       value={formData.organizationType}
-                      onChange={(e) => handleInputChange('organizationType', e.target.value)}
-                      className="w-full px-3 py-2 border rounded-md bg-background text-sm"
+                      onChange={(e) => setFormData({...formData, organizationType: e.target.value})}
+                      className="w-full h-11 px-3 py-2 border border-slate-300 rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={isSubmitting}
                     >
                       <option value="">Select organization type</option>
@@ -244,7 +203,7 @@ const Contact = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="message" className="text-sm font-semibold">
+                    <Label htmlFor="message" className="text-sm font-semibold text-slate-700">
                       Message / Requirements
                     </Label>
                     <Textarea
@@ -252,7 +211,7 @@ const Contact = () => {
                       placeholder="Tell us about your requirements, expected volume, timeline, or any specific questions..."
                       rows={5}
                       value={formData.message}
-                      onChange={(e) => handleInputChange('message', e.target.value)}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
                       disabled={isSubmitting}
                       className="resize-none"
                     />
@@ -260,7 +219,7 @@ const Contact = () => {
 
                   <Button 
                     onClick={handleSubmit}
-                    className="w-full h-12 text-base font-semibold"
+                    className="w-full h-12 text-base font-semibold bg-blue-600 hover:bg-blue-700"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
@@ -276,7 +235,7 @@ const Contact = () => {
                     )}
                   </Button>
 
-                  <p className="text-xs text-muted-foreground text-center">
+                  <p className="text-xs text-slate-500 text-center">
                     By submitting, you agree to our terms of service and privacy policy
                   </p>
                 </div>
@@ -287,31 +246,30 @@ const Contact = () => {
           {/* Sidebar - Takes 2 columns */}
           <div className="lg:col-span-2 space-y-6">
             {/* Download MoU */}
-            <Card className="shadow-lg border hover:shadow-xl transition-shadow duration-300">
+            <Card className="shadow-lg border-2 border-slate-200">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
-                  <Download className="h-5 w-5 text-primary" />
+                  <Download className="h-5 w-5 text-blue-600" />
                   Sample MoU Template
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="p-5 bg-gradient-to-br from-primary/5 to-purple-500/5 rounded-lg border-2 border-dashed border-primary/20 hover:border-primary/40 transition-colors">
+                <div className="p-5 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border-2 border-dashed border-blue-200">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <p className="font-semibold text-lg mb-1">VeriLoan_MoU_Template.pdf</p>
-                      <p className="text-sm text-muted-foreground">2.4 MB • Updated October 2025</p>
+                      <p className="text-sm text-slate-600">2.4 MB • Updated October 2025</p>
                     </div>
-                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Download className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Download className="h-6 w-6 text-blue-600" />
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-slate-600 mb-4">
                     Comprehensive template covering implementation, data security, SLAs, and partnership terms
                   </p>
                   <Button 
                     onClick={handleDownloadMoU} 
-                    className="w-full"
-                    variant="outline"
+                    className="w-full bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50"
                   >
                     <Download className="h-4 w-4 mr-2" />
                     Download Template
@@ -321,49 +279,49 @@ const Contact = () => {
             </Card>
 
             {/* Contact Details */}
-            <Card className="shadow-lg border">
+            <Card className="shadow-lg border-2 border-slate-200">
               <CardHeader>
                 <CardTitle className="text-xl">Contact Information</CardTitle>
                 <CardDescription>Reach out to the VeriLoan team</CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg hover:bg-secondary transition-colors cursor-pointer group">
-                  <div className="w-11 h-11 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Mail className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer">
+                  <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Mail className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Email</p>
-                    <p className="font-semibold">partnerships@veriloan.com</p>
+                    <p className="text-xs text-slate-600 font-medium">Email</p>
+                    <p className="font-semibold text-slate-900">partnerships@veriloan.com</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg hover:bg-secondary transition-colors cursor-pointer group">
-                  <div className="w-11 h-11 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Phone className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer">
+                  <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Phone className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Phone</p>
-                    <p className="font-semibold">+91 1234 567 890</p>
+                    <p className="text-xs text-slate-600 font-medium">Phone</p>
+                    <p className="font-semibold text-slate-900">+91 1234 567 890</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg hover:bg-secondary transition-colors cursor-pointer group">
-                  <div className="w-11 h-11 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <Linkedin className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors cursor-pointer">
+                  <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Linkedin className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">LinkedIn</p>
-                    <p className="font-semibold">linkedin.com/company/veriloan</p>
+                    <p className="text-xs text-slate-600 font-medium">LinkedIn</p>
+                    <p className="font-semibold text-slate-900">linkedin.com/company/veriloan</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 p-4 bg-secondary/50 rounded-lg">
-                  <div className="w-11 h-11 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Building2 className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
+                  <div className="w-11 h-11 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Building2 className="h-5 w-5 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground font-medium">Headquarters</p>
-                    <p className="font-semibold text-sm">Innovation Hub, Tech City, India</p>
+                    <p className="text-xs text-slate-600 font-medium">Headquarters</p>
+                    <p className="font-semibold text-sm text-slate-900">Innovation Hub, Tech City, India</p>
                   </div>
                 </div>
               </CardContent>
@@ -373,8 +331,8 @@ const Contact = () => {
 
         {/* Partnership Benefits Grid */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center mb-4">Why Partner With VeriLoan?</h2>
-          <p className="text-center text-muted-foreground mb-10 max-w-2xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-4 text-slate-900">Why Partner With VeriLoan?</h2>
+          <p className="text-center text-slate-600 mb-10 max-w-2xl mx-auto">
             Join the future of loan verification with cutting-edge technology and proven results
           </p>
           
@@ -382,13 +340,13 @@ const Contact = () => {
             {partnershipBenefits.map((benefit, index) => {
               const Icon = benefit.icon;
               return (
-                <Card key={index} className="shadow-lg border hover:shadow-xl hover:border-primary/50 transition-all duration-300">
+                <Card key={index} className="shadow-lg border-2 border-slate-200 hover:shadow-xl hover:border-blue-300 transition-all duration-300">
                   <CardContent className="pt-6">
-                    <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-xl flex items-center justify-center mb-4">
-                      <Icon className="h-7 w-7 text-primary" />
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center mb-4">
+                      <Icon className="h-7 w-7 text-blue-600" />
                     </div>
-                    <h3 className="font-bold text-lg mb-2">{benefit.title}</h3>
-                    <p className="text-sm text-muted-foreground">{benefit.description}</p>
+                    <h3 className="font-bold text-lg mb-2 text-slate-900">{benefit.title}</h3>
+                    <p className="text-sm text-slate-600">{benefit.description}</p>
                   </CardContent>
                 </Card>
               );
@@ -397,20 +355,20 @@ const Contact = () => {
         </div>
 
         {/* Additional Stats */}
-        <Card className="shadow-xl bg-gradient-to-br from-primary/5 via-purple-500/5 to-primary/5 border-2">
+        <Card className="shadow-xl bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 border-2 border-blue-200">
           <CardContent className="py-10">
             <div className="grid md:grid-cols-3 gap-8 text-center">
               <div>
-                <div className="text-4xl font-bold text-primary mb-2">70%</div>
-                <p className="text-muted-foreground">Cost Reduction</p>
+                <div className="text-4xl font-bold text-blue-600 mb-2">70%</div>
+                <p className="text-slate-700 font-medium">Cost Reduction</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary mb-2">₹50K+</div>
-                <p className="text-muted-foreground">Loans Verified Daily</p>
+                <div className="text-4xl font-bold text-blue-600 mb-2">50K+</div>
+                <p className="text-slate-700 font-medium">Loans Verified Daily</p>
               </div>
               <div>
-                <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
-                <p className="text-muted-foreground">System Uptime</p>
+                <div className="text-4xl font-bold text-blue-600 mb-2">99.9%</div>
+                <p className="text-slate-700 font-medium">System Uptime</p>
               </div>
             </div>
           </CardContent>
