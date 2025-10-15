@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Navbar, type UserRole } from "./components/Navbar";
 import { Footer } from "./components/Footer";
-import { Login } from "./components/login";
+import { Login } from "./components/Login"; // ✅ Capital L
 import Landing from "./pages/Landing";
 import Beneficiary from "./pages/Beneficiary";
 import Officer from "./pages/Officer";
@@ -20,11 +20,9 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [currentRole, setCurrentRole] = useState<UserRole>(null);
-  const [showLogin, setShowLogin] = useState(false);
 
   const handleLogin = (role: UserRole, email: string) => {
     setCurrentRole(role);
-    setShowLogin(false);
     console.log(`Logged in as ${role} with email: ${email}`);
   };
 
@@ -44,12 +42,7 @@ const App = () => {
                 <Route path="/" element={<Landing />} />
                 <Route 
                   path="/login" 
-                  element={
-                    <Login 
-                      onLogin={handleLogin}
-                      onClose={() => setShowLogin(false)}
-                    />
-                  } 
+                  element={<Login onLogin={handleLogin} />} 
                 />
                 <Route path="/beneficiary" element={<Beneficiary />} />
                 <Route path="/officer" element={<Officer />} />
@@ -57,7 +50,6 @@ const App = () => {
                 <Route path="/ai-insights" element={<AIInsights />} />
                 <Route path="/pilot" element={<Pilot />} />
                 <Route path="/contact" element={<Contact />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
